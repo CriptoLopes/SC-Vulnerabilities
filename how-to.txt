@@ -1,0 +1,48 @@
+# Clone the repository
+git clone https://github.com/YOUR_USERNAME/VulnerableSmartContract.git
+cd VulnerableSmartContract
+
+# Initialize Truffle
+truffle init
+
+# Create the directory structure
+mkdir contracts migrations test
+
+# Add the smart contract and attack contract code
+echo "YOUR_SMART_CONTRACT_CODE" > contracts/VulnerableContract.sol
+echo "YOUR_ATTACK_CONTRACT_CODE" > contracts/AttackContract.sol
+
+# Create a migration script
+echo "const VulnerableContract = artifacts.require('VulnerableContract');
+module.exports = function(deployer) {
+  deployer.deploy(VulnerableContract);
+};" > migrations/2_deploy_contracts.js
+
+# Create a test file (optional)
+echo "const VulnerableContract = artifacts.require('VulnerableContract');
+const AttackContract = artifacts.require('AttackContract');
+
+contract('VulnerableContract', (accounts) => {
+  it('should deploy contracts', async () => {
+    const vulnerable = await VulnerableContract.deployed();
+    assert(vulnerable.address !== '');
+  });
+
+  it('should allow the attack contract to take ownership', async () => {
+    const vulnerable = await VulnerableContract.deployed();
+    const attack = await AttackContract.new(vulnerable.address);
+    await attack.exploitOwnership();
+    const newOwner = await vulnerable.owner();
+    assert(newOwner === attack.address);
+  });
+});" > test/TestContracts.js
+
+# Add the README file
+echo "YOUR_README_CONTENT" > README.md
+
+# Initialize git and push to GitHub
+git init
+git add .
+git commit -m "Initial commit"
+git remote add origin https://github.com/YOUR_USERNAME/VulnerableSmartContract.git
+git push -u origin master
